@@ -2,7 +2,11 @@
     "version": 2,
     "builds": [
       {
-        "src": "server.js",
+        "src": "client", // Angular app source directory
+        "use": "@vercel/static"
+      },
+      {
+        "src": "server.js", // JSON server source file
         "use": "@vercel/node",
         "config": {
           "includeFiles": ["db.json"]
@@ -11,8 +15,13 @@
     ],
     "routes": [
       {
-        "src": "/(.*)",
+        "src": "/api/.*", // JSON server endpoints
         "dest": "server.js"
+      },
+      {
+        "src": "/(.*)", // Angular app route
+        "dest": "client/index.html"
       }
     ]
   }
+  
