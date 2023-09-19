@@ -1,23 +1,23 @@
-<div class="container-fluid bg-light">
+<div class="container-fluid bg-light d-flex justify-content-center align-items-center vh-100">
 
     <div class="container bg-light">
-        <div class="row mt-4" style="height: 500px;">
+        <div class="row mt-4" style="height: 700px;">
             <div class="col">
             </div>
             <div class="col-md-6 bg-white shadow">
                 <div class="card bg-warning mt-4">
-                    <h4 class="text-white ps-3 pt-2 pb-2">To Do List</h4>
+                    <h4 class="text-white  text-center ps-3 pt-2 pb-2 mt-2">To Do List</h4>
                 </div>
 
                 <div class="shadow">
                     <div class="input-group p-4">
                         <input type="text" class="form-control" placeholder="Enter the task" name="task"
-                            [(ngModel)]="addTaskValue">
+                            [(ngModel)]="addTaskValue" style="text-align: center;">
                         <button class="btn btn-outline-success" type="button" (click)="addTask()">Add</button>
                     </div>
                 </div>
 
-                <h4 class="text-primary mt-4">
+                <h4 class="text-primary text-center mt-4">
                     Tasks :
                 </h4>
 
