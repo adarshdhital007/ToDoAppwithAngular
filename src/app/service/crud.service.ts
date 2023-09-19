@@ -8,22 +8,30 @@ import { Observable } from 'rxjs';
 })
 export class CrudService {
 
-  serviceURL:string;
+  private serviceURL: string;
 
-  constructor(private http:HttpClient) { 
-    this.serviceURL="https://to-do-appwith-angular.vercel.app/tasks/"
+  constructor(private http: HttpClient) { 
+    // Update the serviceURL with the correct Vercel app URL
+    this.serviceURL = 'https://to-do-appwith-angular.vercel.app/tasks'; // Replace with your Vercel app URL
   }
 
-  addTask(task:Task):Observable<Task>{
-      return this.http.post<Task>(this.serviceURL,task);
+  // Add a new task
+  addTask(task: Task): Observable<Task> {
+    return this.http.post<Task>(this.serviceURL, task);
   }
-  getAllTask():Observable<Task[]>{
-      return this.http.get<Task[]>(this.serviceURL);
+
+  // Get all tasks
+  getAllTask(): Observable<Task[]> {
+    return this.http.get<Task[]>(this.serviceURL);
   }
-  deleteTask(task:Task):Observable<Task>{
-      return this.http.delete<Task>(this.serviceURL+'/'+task.id);
+
+  // Delete a task by ID
+  deleteTask(task: Task): Observable<Task> {
+    return this.http.delete<Task>(`${this.serviceURL}/${task.id}`);
   }
-  editTask(task:Task):Observable<Task>{
-      return this.http.put<Task>(this.serviceURL+'/'+task.id,task);
+
+  // Edit a task by ID
+  editTask(task: Task): Observable<Task> {
+    return this.http.put<Task>(`${this.serviceURL}/${task.id}`, task);
   }
 }
