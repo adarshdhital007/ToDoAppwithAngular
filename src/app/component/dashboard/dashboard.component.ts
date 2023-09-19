@@ -8,61 +8,55 @@ import { CrudService } from 'src/app/service/crud.service';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-
   taskObj: Task = new Task();
   taskArr: Task[] = [];
 
   addTaskValue: string = '';
-  editTaskValue:string='';
+  editTaskValue: string = '';
 
-
-  constructor(private crudService: CrudService) {
-
-  }
+  constructor(private crudService: CrudService) {}
 
   ngOnInit(): void {
-    this.editTaskValue='';
-    this.addTaskValue='';
-    this.taskObj = new Task();
-    this.taskArr=[];
     this.getAllTask();
   }
+
   getAllTask() {
-    this.crudService.getAllTask().subscribe(res=>{
-      this.taskArr=res;
-    },err=>{
-      alert("Unable to get list of tasks")
-    })
+    this.crudService
+      .getAllTask()
+      .subscribe(res => {
+        this.taskArr = res;
+      });
   }
 
   addTask() {
-    this.taskObj.task_name=this.addTaskValue;
-    this.crudService.addTask(this.taskObj).subscribe(res => {
-      this.ngOnInit();
-    }, err => {
-      alert(err);
-    })
+    if (this.addTaskValue.trim() === '') {
+      alert('Please enter some text for the task.');
+      return;
+    }
+  
+    const newTask = new Task();
+    newTask.task_name = this.addTaskValue;
+  
+    this.crudService.addTask(newTask);
+    this.addTaskValue = '';
+    this.getAllTask();
   }
+  
 
   editTask() {
-    this.taskObj.task_name=this.editTaskValue;
-    this.crudService.editTask(this.taskObj).subscribe(res => {
-      this.ngOnInit();
-    }, err => {
-      alert("Failed to update task");
-    })
+    this.taskObj.task_name = this.editTaskValue;
+    this.crudService.editTask(this.taskObj);
+    this.editTaskValue = ''; 
+    this.getAllTask();
   }
 
   deleteTask(etask: Task) {
-    this.crudService.deleteTask(etask).subscribe(res => {
-      this.ngOnInit();
-    }, err => {
-      alert("Failed to delete task");
-    });
+    this.crudService.deleteTask(etask);
+    this.getAllTask();
   }
 
-  call(etask:Task){
-    this.taskObj=etask;
-    this.editTaskValue=etask.task_name;
+  call(etask: Task) {
+    this.taskObj = etask;
+    this.editTaskValue = etask.task_name;
   }
 }

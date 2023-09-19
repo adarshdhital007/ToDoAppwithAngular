@@ -1,29 +1,56 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Task } from '../model/task';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CrudService {
+  private tasks: Task[] = [];
+  private tasksSubject: BehaviorSubject<Task[]> = new BehaviorSubject<Task[]>([]);
 
-  serviceURL:string;
-
-  constructor(private http:HttpClient) { 
-    this.serviceURL="https://restful-api-vercel-main-blond.vercel.app/tasks"
+  constructor() {
+    const storedTasks = localStorage.getItem('tasks');
+    if (storedTasks) {
+      this.tasks = JSON.parse(storedTasks);
+      this.tasksSubject.next(this.tasks);
+    }
   }
 
-  addTask(task:Task):Observable<Task>{
-      return this.http.post<Task>(this.serviceURL,task);
+  addTask(task: Task): void {
+    task.id = this.generateTaskId();
+    this.tasks.push(task);
+    this.updateLocalStorage();
   }
-  getAllTask():Observable<Task[]>{
-      return this.http.get<Task[]>(this.serviceURL);
+
+  getAllTask(): Observable<Task[]> {
+    return this.tasksSubject.asObservable();
   }
-  deleteTask(task:Task):Observable<Task>{
-      return this.http.delete<Task>(this.serviceURL+'/'+task.id);
+
+  deleteTask(task: Task): void {
+    const index = this.tasks.findIndex(t => t.id === task.id);
+    if (index !== -1) {
+      this.tasks.splice(index, 1);
+      this.updateLocalStorage();
+    }
   }
-  editTask(task:Task):Observable<Task>{
-      return this.http.put<Task>(this.serviceURL+'/'+task.id,task);
+
+  editTask(task: Task): void {
+    const index = this.tasks.findIndex(t => t.id === task.id);
+    if (index !== -1) {
+      this.tasks[index] = task;
+      this.updateLocalStorage();
+    }
+  }
+
+  private generateTaskId(): number {
+    const existingIds = this.tasks.map(task => task.id);
+    const maxId = Math.max(...existingIds, 0);
+    return maxId + 1;
+  }
+
+  private updateLocalStorage(): void {
+    localStorage.setItem('tasks', JSON.stringify(this.tasks));
+    this.tasksSubject.next(this.tasks);
   }
 }
