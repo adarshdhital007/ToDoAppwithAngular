@@ -11,10 +11,10 @@ export class DashboardComponent implements OnInit {
   taskObj: Task = new Task();
   taskArr: Task[] = [];
 
-  addTaskValue: string = '';
+  addTaskValue: string = ''; 
   editTaskValue: string = '';
 
-  constructor(private crudService: CrudService) {}
+  constructor(private crudService: CrudService) { }
 
   ngOnInit(): void {
     this.getAllTask();
@@ -33,20 +33,24 @@ export class DashboardComponent implements OnInit {
       alert('Please enter some text for the task.');
       return;
     }
-  
+
     const newTask = new Task();
     newTask.task_name = this.addTaskValue;
-  
+
     this.crudService.addTask(newTask);
     this.addTaskValue = '';
     this.getAllTask();
   }
-  
 
   editTask() {
+    if (this.editTaskValue.trim() === '') {
+      alert('Please enter some text to edit the task.');
+      return;
+    }
+
     this.taskObj.task_name = this.editTaskValue;
     this.crudService.editTask(this.taskObj);
-    this.editTaskValue = ''; 
+    this.editTaskValue = '';
     this.getAllTask();
   }
 
